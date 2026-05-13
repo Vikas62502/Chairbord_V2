@@ -209,13 +209,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: '8%',
     backgroundColor: 'rgba(255,255,255,0.06)',
   },
-  /** Solid light plate — logo asset has a black outer frame; on a dark screen it vanishes without this. */
+  /**
+   * Dark plate matching the screen: the logo PNG is black + white ring + mark.
+   * A light plate (#f8fafc) made the white ring disappear into the background.
+   */
   logoShell: {
     alignSelf: 'center',
     paddingVertical: 18,
     paddingHorizontal: 18,
     borderRadius: 28,
-    backgroundColor: '#f8fafc',
+    backgroundColor: stylesBase.ink,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
     overflow: 'hidden',
   },
   taglineArt: {
