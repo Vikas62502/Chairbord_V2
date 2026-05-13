@@ -1,9 +1,4 @@
 /**
- * Central place for API base URL — wire env (react-native-config, etc.) later.
+ * @deprecated Import from `@/config` or `@/client` — kept for existing imports.
  */
-export function getApiBaseUrl(): string {
-  if (__DEV__) {
-    return 'https://api-dev.example.com';
-  }
-  return 'https://api.example.com';
-}
+export { getApiBaseUrl } from '@/config/api';

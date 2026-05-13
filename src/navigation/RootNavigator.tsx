@@ -1,6 +1,6 @@
 import type { RootStackParamList } from '@/navigation/types';
 import { LoginScreen } from '@/screens/auth/LoginScreen';
-import { HomeScreen } from '@/screens/home/HomeScreen';
+import { MainDrawer } from '@/navigation/MainDrawer';
 import { WelcomeScreen } from '@/screens/welcome/WelcomeScreen';
 import { useAppTheme } from '@/theme/ThemeProvider';
 import {
@@ -44,7 +44,7 @@ export function RootNavigator(): React.JSX.Element {
       >
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Home" component={MainDrawer} />
       </Stack.Navigator>
     </NavigationContainer>
   );

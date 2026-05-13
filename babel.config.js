@@ -19,5 +19,7 @@ module.exports = {
         },
       },
     ],
+    // Reanimated’s Babel plugin is the worklets plugin — do not add `react-native-worklets/plugin` separately.
+    'react-native-reanimated/plugin',
   ],
 };

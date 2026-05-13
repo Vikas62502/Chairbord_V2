@@ -1,1 +1,1 @@
-export { HomeScreen } from './home';
+export { DashboardScreen } from './home';

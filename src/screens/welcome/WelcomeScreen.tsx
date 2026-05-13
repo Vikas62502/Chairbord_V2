@@ -1,6 +1,6 @@
 import { AppText } from '@/components/common/AppText';
 import type { RootStackParamList } from '@/navigation/types';
-import { getCache } from '@/services/storage';
+import { AUTH_ACCESS_TOKEN_KEY, getCache } from '@/services/storage';
 import { useAppTheme } from '@/theme/ThemeProvider';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
@@ -21,10 +21,6 @@ const TAGLINE_ART = require('../../assets/chairbordTagLine.png');
 const LOGO_META = Image.resolveAssetSource(LOGO);
 const TAGLINE_META = Image.resolveAssetSource(TAGLINE_ART);
 
-const ACCESS_TOKEN_KEY = 'accessToken';
-/** Mirrors legacy splash: brief hold before the post-login route when signed out. */
-const UNSIGNED_REDIRECT_MS = 1200;
-
 type Props = NativeStackScreenProps<RootStackParamList, 'Welcome'>;
 
 export function WelcomeScreen({ navigation }: Props): React.JSX.Element {
@@ -33,14 +29,20 @@ export function WelcomeScreen({ navigation }: Props): React.JSX.Element {
   const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const logoSize = useMemo(() => {
-    const maxW = Math.min(windowWidth * 0.82, 320);
-    const w = LOGO_META?.width ?? 0;
-    const h = LOGO_META?.height ?? 0;
-    if (w <= 0 || h <= 0) {
-      return { width: maxW, height: 160 };
+    const intrinsicW = LOGO_META?.width ?? 0;
+    const intrinsicH = LOGO_META?.height ?? 0;
+    /** Layout cap — keep modest on large phones. */
+    const requestedMax = Math.min(windowWidth * 0.34, 112);
+    if (intrinsicW <= 0 || intrinsicH <= 0) {
+      return { width: requestedMax, height: Math.round(requestedMax * 0.85) };
     }
-    const scale = maxW / w;
-    return { width: maxW, height: Math.round(h * scale) };
+    /** Never upscale past the bitmap’s intrinsic width (upscaling causes visible pixel shimmer). */
+    const maxW = Math.min(requestedMax, intrinsicW);
+    const scale = maxW / intrinsicW;
+    return {
+      width: maxW,
+      height: Math.max(1, Math.round(intrinsicH * scale)),
+    };
   }, [windowWidth]);
 
   const clearRedirectTimer = useCallback(() => {
@@ -64,7 +66,7 @@ export function WelcomeScreen({ navigation }: Props): React.JSX.Element {
     let cancelled = false;
 
     const run = async (): Promise<void> => {
-      const token = await getCache(ACCESS_TOKEN_KEY);
+      const token = await getCache(AUTH_ACCESS_TOKEN_KEY);
       if (cancelled) {
         return;
       }
@@ -74,7 +76,7 @@ export function WelcomeScreen({ navigation }: Props): React.JSX.Element {
       }
       redirectTimer.current = setTimeout(() => {
         navigation.replace('Login');
-      }, UNSIGNED_REDIRECT_MS);
+      }, 1200);
     };
 
     void run();
@@ -96,7 +98,7 @@ export function WelcomeScreen({ navigation }: Props): React.JSX.Element {
           accessibilityHint="Continues to sign in or your workspace if already signed in"
           onPress={() => {
             void (async () => {
-              const token = await getCache(ACCESS_TOKEN_KEY);
+              const token = await getCache(AUTH_ACCESS_TOKEN_KEY);
               if (token) {
                 goHome();
               } else {
@@ -215,9 +217,9 @@ const styles = StyleSheet.create({
    */
   logoShell: {
     alignSelf: 'center',
-    paddingVertical: 18,
-    paddingHorizontal: 18,
-    borderRadius: 28,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    borderRadius: 22,
     backgroundColor: stylesBase.ink,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.12)',
