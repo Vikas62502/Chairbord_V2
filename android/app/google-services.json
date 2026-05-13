@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "484848235357",
+    "project_id": "cbpl-4335a",
+    "storage_bucket": "cbpl-4335a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:484848235357:android:40d8345462a8764566aeb4",
+        "android_client_info": {
+          "package_name": "com.chairbord"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcmzh2ukSmSXOmEn169A-JtfbgjdtQLOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

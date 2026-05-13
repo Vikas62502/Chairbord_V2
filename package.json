@@ -1,18 +1,37 @@
 {
-  "name": "com.chairbord",
+  "name": "chairbord",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
+    "android:bundle:debug": "node scripts/ensure-android-assets.js && react-native bundle --platform android --dev true --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
+    "android:bundle:release": "node scripts/ensure-android-assets.js && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/build/intermediates/res/merged/release/",
+    "dev": "react-native run-android",
+    "devWithoutCache": "npx react-native start --reset-cache",
+    "delete-apk": "adb shell pm uninstall com.chairbord",
+    "clean": "node scripts/gradle.cjs clean --no-build-cache && npx react-native start --reset-cache",
+    "clean:metro": "npx react-native start --reset-cache",
+    "clean:all": "npx --yes rimraf@6 node_modules android/.gradle android/.gradle-user-home android/build android/app/build android/app/.cxx && yarn install && node scripts/android-wipe-native-cache.js && node scripts/gradle.cjs clean --no-build-cache && npx react-native start --reset-cache",
+    "bundle-reset": "node scripts/ensure-android-assets.js && npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "release": "node scripts/gradle.cjs assembleRelease --no-build-cache --rerun-tasks && node scripts/open-android-output.cjs apk",
+    "bundleRelease": "node scripts/gradle.cjs bundleRelease --no-build-cache --rerun-tasks && node scripts/open-android-output.cjs aab",
+    "doctor": "react-native doctor",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "patch-package",
+    "build:prod": "node scripts/gradle.cjs clean --no-build-cache && npm run android:bundle:release && npm run release && npm run bundleRelease",
+    "build:prodApk": "node scripts/gradle.cjs clean --no-build-cache && npm run android:bundle:release && npm run release",
+    "build:android:wipe-native-cache": "node scripts/android-wipe-native-cache.js",
+    "build:android:clean": "node scripts/android-wipe-native-cache.js && node scripts/react-native-android.cjs build-android --tasks clean --extra-params \"--no-build-cache\"",
+    "build:android:apk": "node scripts/react-native-android.cjs build-android --tasks assembleRelease --extra-params \"--no-build-cache\"",
+    "build:android:aab": "node scripts/react-native-android.cjs build-android --tasks bundleRelease --extra-params \"--no-build-cache\"",
+    "build:android:prod": "node scripts/android-wipe-native-cache.js && node scripts/react-native-android.cjs build-android --tasks clean --extra-params \"--no-build-cache\" && node scripts/react-native-android.cjs build-android --tasks bundleRelease --extra-params \"--no-build-cache\" && node scripts/react-native-android.cjs build-android --tasks assembleRelease --extra-params \"--no-build-cache\""
   },
   "dependencies": {
     "react": "19.2.3",
     "react-native": "0.85.3",
-    "@react-native/new-app-screen": "0.85.3",
     "react-native-safe-area-context": "^5.5.2"
   },
   "devDependencies": {
@@ -30,8 +49,10 @@
     "@types/jest": "^29.5.13",
     "@types/react": "^19.2.0",
     "@types/react-test-renderer": "^19.1.0",
+    "babel-plugin-module-resolver": "^5.0.3",
     "eslint": "^8.19.0",
     "jest": "^29.6.3",
+    "patch-package": "^8.0.1",
     "prettier": "2.8.8",
     "react-test-renderer": "19.2.3",
     "typescript": "^5.8.3"
