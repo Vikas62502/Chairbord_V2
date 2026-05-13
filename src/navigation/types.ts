@@ -1,6 +1,8 @@
 /**
- * React Navigation param lists — extend when you add stacks.
+ * Root stack param lists.
  */
 export type RootStackParamList = {
+  Welcome: undefined;
+  Login: undefined;
   Home: undefined;
 };
