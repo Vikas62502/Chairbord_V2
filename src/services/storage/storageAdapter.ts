@@ -9,6 +9,10 @@ export type StorageAdapter = {
 
 const memory = new Map<string, string>();
 
+export function clearMemoryStorage(): void {
+  memory.clear();
+}
+
 export const memoryStorageAdapter: StorageAdapter = {
   async getItem(key) {
     return memory.get(key) ?? null;

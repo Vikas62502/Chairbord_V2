@@ -1,13 +1,20 @@
-import { memoryStorageAdapter } from '@/services/storage/storageAdapter';
+import { clearMemoryStorage, memoryStorageAdapter } from '@/services/storage/storageAdapter';
 
 export const AUTH_ACCESS_TOKEN_KEY = 'accessToken';
 export const AUTH_REFRESH_TOKEN_KEY = 'refreshToken';
+/** JSON string of user object from login (legacy also used encrypted storage). */
+export const USER_DATA_CACHE_KEY = 'userData';
 
 const AUTH_SESSION_KEYS = [AUTH_ACCESS_TOKEN_KEY, AUTH_REFRESH_TOKEN_KEY] as const;
 
 /** Clears persisted auth tokens (call after refresh failure or forced logout). */
 export async function clearAuthSession(): Promise<void> {
   await Promise.all(AUTH_SESSION_KEYS.map((key) => memoryStorageAdapter.removeItem(key)));
+}
+
+/** Clears all in-memory keys (matches legacy pre-login `removeAllCache`). */
+export async function clearAllCaches(): Promise<void> {
+  clearMemoryStorage();
 }
 
 /**
